@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Viewer</title>
+</head>
+<body>
+    <h2>PDF Viewer</h2>
+    <input type="text" id="pdfUrl" placeholder="Enter PDF URL" style="width: 80%;">
+    <button onclick="loadPDF()">Load PDF</button>
+    <br><br>
+    <iframe id="pdfViewer" width="100%" height="600px"></iframe>
+    <br>
+    <button onclick="printPDF()">Print PDF</button>
+
+    <script>
+        async function fetchPDF() {
+            const owner = "vishnus1793";
+            const repo = "IM";
+            const branch = "main"; // Change if necessary
+            const apiUrl = `https://api.github.com/repos/${owner}/${repo}/git/trees/${branch}?recursive=1`;
+
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+                const files = data.tree;
+                const pdfFiles = files.filter(file => file.path.endsWith(".pdf"));
+
+                if (pdfFiles.length > 0) {
+                    const latestPdf = pdfFiles[pdfFiles.length - 1]; // Get the latest PDF file
+                    const pdfUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${latestPdf.path}`;
+                    document.getElementById('pdfViewer').src = pdfUrl;
+                } else {
+                    alert('No PDFs found in the repository.');
+                }
+            } catch (error) {
+                console.error("Error fetching PDFs:", error);
+            }
+        }
+
+        function loadPDF() {
+            const pdfUrl = document.getElementById('pdfUrl').value;
+            if (pdfUrl) {
+                document.getElementById('pdfViewer').src = pdfUrl;
+            } else {
+                alert('Please enter a valid PDF URL.');
+            }
+        }
+
+        function printPDF() {
+            let iframe = document.getElementById('pdfViewer');
+            if (iframe.src) {
+                iframe.contentWindow.print();
+            } else {
+                alert('No PDF loaded to print.');
+            }
+        }
+
+        fetchPDF(); // Auto-fetch the latest PDF on page load
+    </script>
+</body>
+</html>
