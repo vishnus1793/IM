@@ -43,7 +43,11 @@
             background-color: #0056b3;
         }
         iframe {
-            display: none; /* Hidden iframe for printing */
+            position: absolute;
+            left: -9999px;
+            width: 0;
+            height: 0;
+            visibility: hidden;
         }
     </style>
 </head>
@@ -71,7 +75,7 @@
                 pdfListDiv.innerHTML = "";
 
                 if (pdfFiles.length > 0) {
-                    pdfFiles.forEach((pdf, index) => {
+                    pdfFiles.forEach((pdf) => {
                         const pdfUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${pdf.path}`;
                         const pdfItem = document.createElement('div');
                         pdfItem.classList.add('pdf-item');
@@ -92,8 +96,14 @@
 
         function printPDF(pdfUrl) {
             let iframe = document.getElementById("pdfFrame");
+            
+            // Remove any previous load event listener
+            iframe.onload = null; 
+
+            // Set the new PDF URL
             iframe.src = pdfUrl;
 
+            // Add event listener to print when the PDF is loaded
             iframe.onload = () => {
                 iframe.contentWindow.focus();
                 iframe.contentWindow.print();
