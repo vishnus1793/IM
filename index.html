@@ -51,9 +51,9 @@
 
     <script>
         async function fetchPDFs() {
-            const owner = "vishnus1793";
-            const repo = "IM";
-            const branch = "main";
+            const owner = "vishnus1793"; // Change to your GitHub username
+            const repo = "IM"; // Change to your repository name
+            const branch = "main"; // Change if necessary
             const apiUrl = `https://api.github.com/repos/${owner}/${repo}/git/trees/${branch}?recursive=1`;
 
             try {
@@ -89,7 +89,7 @@
             window.open(pdfUrl, '_blank'); // Opens the PDF in a new tab for printing
         }
 
-        fetchPDFs(); // Fetch PDFs on page load
+        fetchPDFs(); // Fetch PDFs dynamically on page load
     </script>
 
 </body>
