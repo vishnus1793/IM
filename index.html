@@ -3,22 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF Viewer</title>
+    <title>Print PDF</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        button {
+            font-size: 18px;
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <h2>PDF Viewer</h2>
-    <input type="text" id="pdfUrl" placeholder="Enter PDF URL" style="width: 80%;">
-    <button onclick="loadPDF()">Load PDF</button>
-    <br><br>
-    <iframe id="pdfViewer" width="100%" height="600px"></iframe>
-    <br>
+
     <button onclick="printPDF()">Print PDF</button>
 
     <script>
-        async function fetchPDF() {
+        async function fetchLatestPDF() {
             const owner = "vishnus1793";
             const repo = "IM";
-            const branch = "main"; // Change if necessary
+            const branch = "main";
             const apiUrl = `https://api.github.com/repos/${owner}/${repo}/git/trees/${branch}?recursive=1`;
 
             try {
@@ -28,40 +45,25 @@
                 const pdfFiles = files.filter(file => file.path.endsWith(".pdf"));
 
                 if (pdfFiles.length > 0) {
-                    const latestPdf = pdfFiles[pdfFiles.length - 1]; // Get the latest PDF file
-                    const pdfUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${latestPdf.path}`;
-                    document.getElementById('pdfViewer').src = pdfUrl;
+                    const latestPdf = pdfFiles[pdfFiles.length - 1]; // Get latest PDF
+                    return `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${latestPdf.path}`;
                 } else {
-                    alert('No PDFs found in the repository.');
+                    alert('No PDFs found.');
+                    return null;
                 }
             } catch (error) {
                 console.error("Error fetching PDFs:", error);
+                return null;
             }
         }
 
-        function loadPDF() {
-            const pdfUrl = document.getElementById('pdfUrl').value;
+        async function printPDF() {
+            const pdfUrl = await fetchLatestPDF();
             if (pdfUrl) {
-                document.getElementById('pdfViewer').src = pdfUrl;
-            } else {
-                alert('Please enter a valid PDF URL.');
+                window.open(pdfUrl, '_blank'); // Opens PDF in a new tab for easy printing
             }
         }
-
-        function printPDF() {
-            let iframe = document.getElementById('pdfViewer');
-            if (iframe.src) {
-                let printWindow = window.open(iframe.src, '_blank');
-                printWindow.onload = function () {
-                    printWindow.focus();
-                    printWindow.print();
-                };
-            } else {
-                alert('No PDF loaded to print.');
-            }
-        }
-
-        fetchPDF(); // Auto-fetch the latest PDF on page load
     </script>
+
 </body>
 </html>
