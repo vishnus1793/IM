@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF List with Print Option</title>
+    <title>PDF List with Open Option</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -42,21 +42,12 @@
         .pdf-item button:hover {
             background-color: #0056b3;
         }
-        iframe {
-            position: absolute;
-            left: -9999px;
-            width: 0;
-            height: 0;
-            visibility: hidden;
-        }
     </style>
 </head>
 <body>
 
     <h2>Available PDFs</h2>
     <div class="pdf-list" id="pdfList">Loading PDFs...</div>
-
-    <iframe id="pdfFrame"></iframe> <!-- Hidden iframe for printing -->
 
     <script>
         async function fetchPDFs() {
@@ -81,7 +72,7 @@
                         pdfItem.classList.add('pdf-item');
                         pdfItem.innerHTML = `
                             <span>${pdf.path.split('/').pop()}</span>
-                            <button onclick="printPDF('${pdfUrl}')">Print</button>
+                            <button onclick="openPDF('${pdfUrl}')">Open</button>
                         `;
                         pdfListDiv.appendChild(pdfItem);
                     });
@@ -94,20 +85,8 @@
             }
         }
 
-        function printPDF(pdfUrl) {
-            let iframe = document.getElementById("pdfFrame");
-            
-            // Remove any previous load event listener
-            iframe.onload = null; 
-
-            // Set the new PDF URL
-            iframe.src = pdfUrl;
-
-            // Add event listener to print when the PDF is loaded
-            iframe.onload = () => {
-                iframe.contentWindow.focus();
-                iframe.contentWindow.print();
-            };
+        function openPDF(pdfUrl) {
+            window.open(pdfUrl, '_blank');
         }
 
         fetchPDFs(); // Fetch PDFs dynamically on page load
