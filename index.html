@@ -42,12 +42,17 @@
         .pdf-item button:hover {
             background-color: #0056b3;
         }
+        iframe {
+            display: none; /* Hidden iframe for printing */
+        }
     </style>
 </head>
 <body>
 
     <h2>Available PDFs</h2>
     <div class="pdf-list" id="pdfList">Loading PDFs...</div>
+
+    <iframe id="pdfFrame"></iframe> <!-- Hidden iframe for printing -->
 
     <script>
         async function fetchPDFs() {
@@ -66,7 +71,7 @@
                 pdfListDiv.innerHTML = "";
 
                 if (pdfFiles.length > 0) {
-                    pdfFiles.forEach(pdf => {
+                    pdfFiles.forEach((pdf, index) => {
                         const pdfUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${pdf.path}`;
                         const pdfItem = document.createElement('div');
                         pdfItem.classList.add('pdf-item');
@@ -86,7 +91,13 @@
         }
 
         function printPDF(pdfUrl) {
-            window.open(pdfUrl, '_blank'); // Opens the PDF in a new tab for printing
+            let iframe = document.getElementById("pdfFrame");
+            iframe.src = pdfUrl;
+
+            iframe.onload = () => {
+                iframe.contentWindow.focus();
+                iframe.contentWindow.print();
+            };
         }
 
         fetchPDFs(); // Fetch PDFs dynamically on page load
