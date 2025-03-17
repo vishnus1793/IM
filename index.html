@@ -51,7 +51,11 @@
         function printPDF() {
             let iframe = document.getElementById('pdfViewer');
             if (iframe.src) {
-                iframe.contentWindow.print();
+                let printWindow = window.open(iframe.src, '_blank');
+                printWindow.onload = function () {
+                    printWindow.focus();
+                    printWindow.print();
+                };
             } else {
                 alert('No PDF loaded to print.');
             }
