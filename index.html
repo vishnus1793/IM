@@ -86,7 +86,10 @@
         }
 
         function openPDF(pdfUrl) {
-            window.open(pdfUrl, '_blank');
+            const newTab = window.open(pdfUrl, '_blank');
+            if (!newTab) {
+                alert("Popup blocked! Please allow pop-ups for this site.");
+            }
         }
 
         fetchPDFs(); // Fetch PDFs dynamically on page load
