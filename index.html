@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF List with Open Option</title>
+    <title>PDF List</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -25,22 +25,17 @@
             padding: 10px;
             margin: 5px;
             width: 80%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             border-radius: 5px;
             box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+            text-align: left;
         }
-        .pdf-item button {
-            padding: 5px 10px;
-            border: none;
-            background-color: #007bff;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
+        .pdf-item a {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
         }
-        .pdf-item button:hover {
-            background-color: #0056b3;
+        .pdf-item a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -70,10 +65,7 @@
                         const pdfUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${pdf.path}`;
                         const pdfItem = document.createElement('div');
                         pdfItem.classList.add('pdf-item');
-                        pdfItem.innerHTML = `
-                            <span>${pdf.path.split('/').pop()}</span>
-                            <button onclick="openPDF('${pdfUrl}')">Open</button>
-                        `;
+                        pdfItem.innerHTML = `<a href="${pdfUrl}" target="_blank">${pdf.path.split('/').pop()}</a>`;
                         pdfListDiv.appendChild(pdfItem);
                     });
                 } else {
@@ -82,13 +74,6 @@
             } catch (error) {
                 console.error("Error fetching PDFs:", error);
                 document.getElementById('pdfList').innerHTML = "Error loading PDFs.";
-            }
-        }
-
-        function openPDF(pdfUrl) {
-            const newTab = window.open(pdfUrl, '_blank');
-            if (!newTab) {
-                alert("Popup blocked! Please allow pop-ups for this site.");
             }
         }
 
