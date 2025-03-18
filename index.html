@@ -45,39 +45,36 @@
     <div class="pdf-list" id="pdfList">Loading PDFs...</div>
 
     <script>
-        async function fetchPDFs() {
-            const owner = "vishnus1793"; // Change to your GitHub username
-            const repo = "IM"; // Change to your repository name
-            const branch = "main"; // Change if necessary
-            const apiUrl = `https://api.github.com/repos/${owner}/${repo}/git/trees/${branch}?recursive=1`;
+        const driveFolderId = "1cqcprAbUXzOs9noUBrmG13w8P7hQn05Z"; // Your Google Drive Folder ID
+        const apiKey = "AIzaSyDhaSKPZsRI0MgxASsGIJfsv-eThtyPlD8"; // Your API Key
 
+        async function fetchDrivePDFs() {
+            const url = `https://www.googleapis.com/drive/v3/files?q='${driveFolderId}'+in+parents+and+mimeType='application/pdf'&key=${apiKey}`;
+            
             try {
-                const response = await fetch(apiUrl);
+                const response = await fetch(url);
                 const data = await response.json();
-                const files = data.tree;
-                const pdfFiles = files.filter(file => file.path.endsWith(".pdf"));
-
                 const pdfListDiv = document.getElementById('pdfList');
                 pdfListDiv.innerHTML = "";
 
-                if (pdfFiles.length > 0) {
-                    pdfFiles.forEach((pdf) => {
-                        const pdfUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${pdf.path}`;
+                if (data.files && data.files.length > 0) {
+                    data.files.forEach(file => {
+                        const pdfUrl = `https://drive.google.com/uc?id=${file.id}`;
                         const pdfItem = document.createElement('div');
                         pdfItem.classList.add('pdf-item');
-                        pdfItem.innerHTML = `<a href="${pdfUrl}" target="_blank">${pdf.path.split('/').pop()}</a>`;
+                        pdfItem.innerHTML = `<a href="${pdfUrl}" target="_blank">${file.name}</a>`;
                         pdfListDiv.appendChild(pdfItem);
                     });
                 } else {
                     pdfListDiv.innerHTML = "No PDFs found.";
                 }
             } catch (error) {
-                console.error("Error fetching PDFs:", error);
+                console.error("Error fetching PDFs from Google Drive:", error);
                 document.getElementById('pdfList').innerHTML = "Error loading PDFs.";
             }
         }
 
-        fetchPDFs(); // Fetch PDFs dynamically on page load
+        fetchDrivePDFs(); // Fetch PDFs on page load
     </script>
 
 </body>
